@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>KrakenR</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">KrakenR</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The KrakenR package provides a user-friendly interface to the Kraken
+cryptocurrency exchange’s REST API. It allows R users to access
+real-time and historical market data, asset information, and exchange
+metrics, making it a valuable tool for financial analysts, traders, and
+researchers interested in the cryptocurrency markets.</p>
+<p>This vignette will introduce key functionalities of the package,
+showcasing how to use the API functions to retrieve market data and
+more.</p>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>You can install KrakenR directly from GitHub:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Install the development version from GitHub</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;nathanael-g-durst/KrakenR&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Load the package</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(KrakenR)</span></code></pre></div>
+</div>
+<div id="overview-of-available-functions" class="section level2">
+<h2>Overview of Available Functions</h2>
+<p>The package includes several key functions that allow users to fetch
+various types of data from the Kraken exchange:</p>
+<ul>
+<li><code>getAssets()</code> - Retrieve detailed asset information.</li>
+<li><code>getOB()</code> - Fetch order book data for a specific trading
+pair.</li>
+<li><code>getOHLC()</code> - Access OHLC (Open, High, Low, Close) data
+for a trading pair.</li>
+<li><code>getPairs()</code> - Retrieve tradable asset pair
+information.</li>
+<li><code>getSpreads()</code> - Fetch recent spread data.</li>
+<li><code>getStatus()</code> - Get the current system status of the
+Kraken exchange.</li>
+<li><code>getTickers()</code> - Retrieve detailed ticker information for
+trading pairs.</li>
+<li><code>getTime()</code> - Fetch the current Kraken server time.</li>
+<li><code>getTrades()</code> - Retrieve recent trade data for a trading
+pair.</li>
+</ul>
+</div>
+<div id="example-workflow" class="section level2">
+<h2>Example Workflow</h2>
+<p>This section provides a detailed walkthrough using KrakenR to access
+Kraken market data.</p>
+<div id="fetching-asset-information" class="section level3">
+<h3>1. Fetching Asset Information</h3>
+<p>To retrieve detailed information about all available assets or
+specific ones:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Fetch all available assets</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>assets_all <span class="ot">&lt;-</span> <span class="fu">getAssets</span>()</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># Fetch data for specific assets</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>assets_specific <span class="ot">&lt;-</span> <span class="fu">getAssets</span>(<span class="fu">c</span>(<span class="st">&quot;BTC&quot;</span>, <span class="st">&quot;ETH&quot;</span>, <span class="st">&quot;ADA&quot;</span>))</span></code></pre></div>
+<p>The getAssets() function returns a data frame containing asset
+information, such as the asset class, decimals, and status.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="9%" />
+<col width="10%" />
+<col width="9%" />
+<col width="10%" />
+<col width="20%" />
+<col width="9%" />
+<col width="7%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">AssetID</th>
+<th align="left">aclass</th>
+<th align="left">altname</th>
+<th align="right">decimals</th>
+<th align="right">display_decimals</th>
+<th align="left">status</th>
+<th align="left">Asset</th>
+<th align="right">collateral_value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1INCH</td>
+<td align="left">currency</td>
+<td align="left">1INCH</td>
+<td align="right">10</td>
+<td align="right">5</td>
+<td align="left">enabled</td>
+<td align="left">1INCH</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">AAVE</td>
+<td align="left">currency</td>
+<td align="left">AAVE</td>
+<td align="right">10</td>
+<td align="right">5</td>
+<td align="left">enabled</td>
+<td align="left">AAVE</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">ACA</td>
+<td align="left">currency</td>
+<td align="left">ACA</td>
+<td align="right">10</td>
+<td align="right">5</td>
+<td align="left">enabled</td>
+<td align="left">ACA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">ACH</td>
+<td align="left">currency</td>
+<td align="left">ACH</td>
+<td align="right">10</td>
+<td align="right">5</td>
+<td align="left">enabled</td>
+<td align="left">ACH</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">ADA</td>
+<td align="left">currency</td>
+<td align="left">ADA</td>
+<td align="right">8</td>
+<td align="right">6</td>
+<td align="left">enabled</td>
+<td align="left">ADA</td>
+<td align="right">0.9</td>
+</tr>
+<tr class="even">
+<td align="left">ADA.S</td>
+<td align="left">currency</td>
+<td align="left">ADA.S</td>
+<td align="right">8</td>
+<td align="right">6</td>
+<td align="left">enabled</td>
+<td align="left">ADA.S</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="retrieving-order-book-data" class="section level3">
+<h3>2. Retrieving Order Book Data</h3>
+<p>You can use <code>getOB()</code> to fetch order book data for a
+specific trading pair:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Fetch order book data for ADAEUR pair</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>order_book <span class="ot">&lt;-</span> <span class="fu">getOB</span>(<span class="st">&quot;ADAEUR&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Fetch order book data with a limit on the number of orders</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>order_book_limited <span class="ot">&lt;-</span> <span class="fu">getOB</span>(<span class="st">&quot;ADAEUR&quot;</span>, <span class="at">count =</span> <span class="dv">3</span>)</span></code></pre></div>
+<p>The output includes bid and ask orders, sorted by price, and can be
+used for market analysis.</p>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="11%" />
+<col width="21%" />
+<col width="11%" />
+<col width="10%" />
+<col width="11%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">Bid_Price</th>
+<th align="right">Bid_Volume</th>
+<th align="left">Bid_Timestamp</th>
+<th align="left">Order_Type</th>
+<th align="right">Ask_Price</th>
+<th align="right">Ask_Volume</th>
+<th align="left">Ask_Timestamp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.334025</td>
+<td align="right">11048.20</td>
+<td align="left">2024-10-21 23:06:16</td>
+<td align="left">Bid</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">0.334033</td>
+<td align="right">13820.01</td>
+<td align="left">2024-10-21 23:06:42</td>
+<td align="left">Bid</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="right">0.334050</td>
+<td align="right">50554.76</td>
+<td align="left">2024-10-21 23:06:46</td>
+<td align="left">Bid</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Ask</td>
+<td align="right">0.334051</td>
+<td align="right">83313.603</td>
+<td align="left">2024-10-21 23:05:49</td>
+</tr>
+<tr class="odd">
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Ask</td>
+<td align="right">0.334321</td>
+<td align="right">9679.675</td>
+<td align="left">2024-10-21 23:06:48</td>
+</tr>
+<tr class="even">
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Ask</td>
+<td align="right">0.334338</td>
+<td align="right">362.802</td>
+<td align="left">2024-10-21 23:06:31</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="fetching-ohlc-data" class="section level3">
+<h3>3. Fetching OHLC Data</h3>
+<p>The <code>getOHLC()</code> function allows you to retrieve OHLC
+(Open, High, Low, Close) data for a given trading pair at various time
+intervals:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Fetch 1-minute interval OHLC data for ADAEUR</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>ohlc_data <span class="ot">&lt;-</span> <span class="fu">getOHLC</span>(<span class="st">&quot;ADAEUR&quot;</span>, <span class="at">interval =</span> <span class="dv">1</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># Fetch 4-hour interval data</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>ohlc_data_4h <span class="ot">&lt;-</span> <span class="fu">getOHLC</span>(<span class="st">&quot;ADAEUR&quot;</span>, <span class="at">interval =</span> <span class="dv">240</span>)</span></code></pre></div>
+<p>This function is useful for technical analysis and charting.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="24%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Time</th>
+<th align="right">Open</th>
+<th align="right">High</th>
+<th align="right">Low</th>
+<th align="right">Close</th>
+<th align="right">VWAP</th>
+<th align="right">Volume</th>
+<th align="right">Count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2024-06-24 02:00:00</td>
+<td align="right">0.356047</td>
+<td align="right">0.356286</td>
+<td align="right">0.351564</td>
+<td align="right">0.355843</td>
+<td align="right">0.354318</td>
+<td align="right">104656.8</td>
+<td align="right">83</td>
+</tr>
+<tr class="even">
+<td align="left">2024-06-24 06:00:00</td>
+<td align="right">0.354037</td>
+<td align="right">0.354386</td>
+<td align="right">0.345861</td>
+<td align="right">0.348543</td>
+<td align="right">0.348949</td>
+<td align="right">370810.1</td>
+<td align="right">1082</td>
+</tr>
+<tr class="odd">
+<td align="left">2024-06-24 10:00:00</td>
+<td align="right">0.348606</td>
+<td align="right">0.352655</td>
+<td align="right">0.337538</td>
+<td align="right">0.346832</td>
+<td align="right">0.345331</td>
+<td align="right">918418.7</td>
+<td align="right">777</td>
+</tr>
+<tr class="even">
+<td align="left">2024-06-24 14:00:00</td>
+<td align="right">0.346943</td>
+<td align="right">0.353498</td>
+<td align="right">0.345000</td>
+<td align="right">0.345000</td>
+<td align="right">0.348788</td>
+<td align="right">248185.1</td>
+<td align="right">287</td>
+</tr>
+<tr class="odd">
+<td align="left">2024-06-24 18:00:00</td>
+<td align="right">0.344991</td>
+<td align="right">0.347858</td>
+<td align="right">0.341000</td>
+<td align="right">0.342916</td>
+<td align="right">0.343552</td>
+<td align="right">846399.9</td>
+<td align="right">413</td>
+</tr>
+<tr class="even">
+<td align="left">2024-06-24 22:00:00</td>
+<td align="right">0.343516</td>
+<td align="right">0.352510</td>
+<td align="right">0.338250</td>
+<td align="right">0.352000</td>
+<td align="right">0.347171</td>
+<td align="right">650738.7</td>
+<td align="right">375</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="getting-asset-pair-information" class="section level3">
+<h3>4. Getting Asset Pair Information</h3>
+<p>To retrieve tradable asset pairs and their details:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Fetch all available asset pairs</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>pairs_all <span class="ot">&lt;-</span> <span class="fu">getPairs</span>()</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co"># Fetch information for a specific pair</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>pair_info <span class="ot">&lt;-</span> <span class="fu">getPairs</span>(<span class="fu">c</span>(<span class="st">&quot;ADAEUR&quot;</span>, <span class="st">&quot;BTCUSD&quot;</span>))</span></code></pre></div>
+<p>You can also filter by specific details such as leverage, fees, or
+margin.</p>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="87%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Column</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">PairID</td>
+<td align="left">1INCHEUR</td>
+</tr>
+<tr class="even">
+<td align="left">altname</td>
+<td align="left">1INCHEUR</td>
+</tr>
+<tr class="odd">
+<td align="left">wsname</td>
+<td align="left">1INCH/EUR</td>
+</tr>
+<tr class="even">
+<td align="left">aclass_base</td>
+<td align="left">currency</td>
+</tr>
+<tr class="odd">
+<td align="left">base</td>
+<td align="left">1INCH</td>
+</tr>
+<tr class="even">
+<td align="left">aclass_quote</td>
+<td align="left">currency</td>
+</tr>
+<tr class="odd">
+<td align="left">quote</td>
+<td align="left">ZEUR</td>
+</tr>
+<tr class="even">
+<td align="left">lot</td>
+<td align="left">unit</td>
+</tr>
+<tr class="odd">
+<td align="left">cost_decimals</td>
+<td align="left">5</td>
+</tr>
+<tr class="even">
+<td align="left">pair_decimals</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="left">lot_decimals</td>
+<td align="left">8</td>
+</tr>
+<tr class="even">
+<td align="left">lot_multiplier</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">leverage_buy</td>
+<td align="left">list(leverage_buy = list())</td>
+</tr>
+<tr class="even">
+<td align="left">leverage_sell</td>
+<td align="left">list(leverage_sell = list())</td>
+</tr>
+<tr class="odd">
+<td align="left">fees</td>
+<td align="left">list(fees = c(0, 10000, 50000, 1e+05, 250000, 5e+05,
+1e+06, 2500000, 5e+06, 1e+07, 0.4, 0.35, 0.24, 0.22, 0.2, 0.18, 0.16,
+0.14, 0.12, 0.1))</td>
+</tr>
+<tr class="even">
+<td align="left">fees_maker</td>
+<td align="left">list(fees_maker = c(0, 10000, 50000, 1e+05, 250000,
+5e+05, 1e+06, 2500000, 5e+06, 1e+07, 0.25, 0.2, 0.14, 0.12, 0.1, 0.08,
+0.06, 0.04, 0.02, 0))</td>
+</tr>
+<tr class="odd">
+<td align="left">fee_volume_currency</td>
+<td align="left">ZUSD</td>
+</tr>
+<tr class="even">
+<td align="left">margin_call</td>
+<td align="left">80</td>
+</tr>
+<tr class="odd">
+<td align="left">margin_stop</td>
+<td align="left">40</td>
+</tr>
+<tr class="even">
+<td align="left">ordermin</td>
+<td align="left">11</td>
+</tr>
+<tr class="odd">
+<td align="left">costmin</td>
+<td align="left">0.45</td>
+</tr>
+<tr class="even">
+<td align="left">tick_size</td>
+<td align="left">0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">status</td>
+<td align="left">online</td>
+</tr>
+<tr class="even">
+<td align="left">Pair</td>
+<td align="left">1INCHEUR</td>
+</tr>
+<tr class="odd">
+<td align="left">long_position_limit</td>
+<td align="left">list(NA)</td>
+</tr>
+<tr class="even">
+<td align="left">short_position_limit</td>
+<td align="left">list(NA)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="fetching-spread-data" class="section level3">
+<h3>5. Fetching Spread Data</h3>
+<p>To get recent spread data for a trading pair:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Fetch spread data for ADAEUR</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>spread_data <span class="ot">&lt;-</span> <span class="fu">getSpreads</span>(<span class="st">&quot;ADAEUR&quot;</span>)</span></code></pre></div>
+<p>The spread data provides insight into the bid-ask spread over time,
+which is useful for liquidity analysis.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Time</th>
+<th align="right">Bid</th>
+<th align="right">Ask</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2024-10-21 23:00:44</td>
+<td align="right">0.333928</td>
+<td align="right">0.334044</td>
+</tr>
+<tr class="even">
+<td align="left">2024-10-21 23:00:44</td>
+<td align="right">0.333930</td>
+<td align="right">0.334044</td>
+</tr>
+<tr class="odd">
+<td align="left">2024-10-21 23:00:44</td>
+<td align="right">0.333929</td>
+<td align="right">0.334044</td>
+</tr>
+<tr class="even">
+<td align="left">2024-10-21 23:00:44</td>
+<td align="right">0.333929</td>
+<td align="right">0.334044</td>
+</tr>
+<tr class="odd">
+<td align="left">2024-10-21 23:00:44</td>
+<td align="right">0.333929</td>
+<td align="right">0.334044</td>
+</tr>
+<tr class="even">
+<td align="left">2024-10-21 23:00:45</td>
+<td align="right">0.333932</td>
+<td align="right">0.334044</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="getting-ticker-information" class="section level3">
+<h3>6. Getting Ticker Information</h3>
+<p>To fetch real-time ticker information for trading pairs:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Fetch ticker information for all pairs</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>tickers_all <span class="ot">&lt;-</span> <span class="fu">getTickers</span>()</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co"># Fetch ticker information for specific pairs</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>tickers_specific <span class="ot">&lt;-</span> <span class="fu">getTickers</span>(<span class="fu">c</span>(<span class="st">&quot;ADAEUR&quot;</span>, <span class="st">&quot;BTCUSD&quot;</span>))</span></code></pre></div>
+<p>This function provides real-time price, volume, and trading
+information.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Column</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">PairID</td>
+<td align="left">1INCHEUR</td>
+</tr>
+<tr class="even">
+<td align="left">Pair</td>
+<td align="left">1INCHEUR</td>
+</tr>
+<tr class="odd">
+<td align="left">Ask_Price</td>
+<td align="left">0.259</td>
+</tr>
+<tr class="even">
+<td align="left">Ask_WholeLotVolume</td>
+<td align="left">50975</td>
+</tr>
+<tr class="odd">
+<td align="left">Ask_LotVolume</td>
+<td align="left">50975</td>
+</tr>
+<tr class="even">
+<td align="left">Bid_Price</td>
+<td align="left">0.258</td>
+</tr>
+<tr class="odd">
+<td align="left">Bid_WholeLotVolume</td>
+<td align="left">9720</td>
+</tr>
+<tr class="even">
+<td align="left">Bid_LotVolume</td>
+<td align="left">9720</td>
+</tr>
+<tr class="odd">
+<td align="left">LastTrade_Price</td>
+<td align="left">0.258</td>
+</tr>
+<tr class="even">
+<td align="left">LastTrade_LotVolume</td>
+<td align="left">30.05704304</td>
+</tr>
+<tr class="odd">
+<td align="left">Volume_Today</td>
+<td align="left">47390.92125152</td>
+</tr>
+<tr class="even">
+<td align="left">Volume_24h</td>
+<td align="left">47622.86870632</td>
+</tr>
+<tr class="odd">
+<td align="left">VWAP_Today</td>
+<td align="left">0.2574</td>
+</tr>
+<tr class="even">
+<td align="left">VWAP_24h</td>
+<td align="left">0.25745</td>
+</tr>
+<tr class="odd">
+<td align="left">Trades_Today</td>
+<td align="left">64</td>
+</tr>
+<tr class="even">
+<td align="left">Trades_24h</td>
+<td align="left">70</td>
+</tr>
+<tr class="odd">
+<td align="left">Low_Today</td>
+<td align="left">0.254</td>
+</tr>
+<tr class="even">
+<td align="left">Low_24h</td>
+<td align="left">0.254</td>
+</tr>
+<tr class="odd">
+<td align="left">High_Today</td>
+<td align="left">0.266</td>
+</tr>
+<tr class="even">
+<td align="left">High_24h</td>
+<td align="left">0.268</td>
+</tr>
+<tr class="odd">
+<td align="left">Open_Price</td>
+<td align="left">0.265</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="fetching-recent-trade-data" class="section level3">
+<h3>7. Fetching Recent Trade Data</h3>
+<p>To retrieve recent trade data for a trading pair:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Fetch recent trades for ADAEUR</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>recent_trades <span class="ot">&lt;-</span> <span class="fu">getTrades</span>(<span class="st">&quot;ADAEUR&quot;</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co"># Fetch trades since a specific timestamp</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>recent_trades_since <span class="ot">&lt;-</span> <span class="fu">getTrades</span>(<span class="st">&quot;ADAEUR&quot;</span>, <span class="at">since =</span> <span class="st">&quot;2024-10-01 12:00:00&quot;</span>)</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="10%" />
+<col width="10%" />
+<col width="22%" />
+<col width="12%" />
+<col width="17%" />
+<col width="16%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">Price</th>
+<th align="right">Volume</th>
+<th align="left">Time</th>
+<th align="left">Order_Type</th>
+<th align="left">Execution_Type</th>
+<th align="left">Miscellaneous</th>
+<th align="left">Trade_ID</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.334051</td>
+<td align="right">1423.900</td>
+<td align="left">2024-10-21 23:05:49</td>
+<td align="left">buy</td>
+<td align="left">limit</td>
+<td align="left"></td>
+<td align="left">11285860</td>
+</tr>
+<tr class="even">
+<td align="right">0.334051</td>
+<td align="right">3110.000</td>
+<td align="left">2024-10-21 23:05:44</td>
+<td align="left">buy</td>
+<td align="left">limit</td>
+<td align="left"></td>
+<td align="left">11285859</td>
+</tr>
+<tr class="odd">
+<td align="right">0.334051</td>
+<td align="right">6110.000</td>
+<td align="left">2024-10-21 23:05:44</td>
+<td align="left">buy</td>
+<td align="left">limit</td>
+<td align="left"></td>
+<td align="left">11285858</td>
+</tr>
+<tr class="even">
+<td align="right">0.334051</td>
+<td align="right">1820.000</td>
+<td align="left">2024-10-21 23:05:44</td>
+<td align="left">buy</td>
+<td align="left">limit</td>
+<td align="left"></td>
+<td align="left">11285857</td>
+</tr>
+<tr class="odd">
+<td align="right">0.334051</td>
+<td align="right">1880.000</td>
+<td align="left">2024-10-21 23:05:44</td>
+<td align="left">buy</td>
+<td align="left">limit</td>
+<td align="left"></td>
+<td align="left">11285856</td>
+</tr>
+<tr class="even">
+<td align="right">0.334051</td>
+<td align="right">1763.697</td>
+<td align="left">2024-10-21 23:05:44</td>
+<td align="left">buy</td>
+<td align="left">limit</td>
+<td align="left"></td>
+<td align="left">11285855</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="retrieving-system-status" class="section level3">
+<h3>8. Retrieving System Status</h3>
+<p>To check the operational status of the Kraken exchange:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Fetch both system status and timestamp</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>status_info <span class="ot">&lt;-</span> <span class="fu">getStatus</span>()</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co"># Fetch only system status</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>system_status <span class="ot">&lt;-</span> <span class="fu">getStatus</span>(<span class="st">&quot;status&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;System Status: online&quot;               &quot;System Status: 2024-10-21T21:06:52Z&quot;</code></pre>
+</div>
+<div id="retrieving-server-time" class="section level3">
+<h3>9. Retrieving Server Time</h3>
+<p>You can check the current server time in UNIX or RFC formats:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Fetch UNIX time</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>server_time_unix <span class="ot">&lt;-</span> <span class="fu">getTime</span>(<span class="st">&quot;unix&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co"># Fetch RFC 1123 time</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>server_time_rfc <span class="ot">&lt;-</span> <span class="fu">getTime</span>(<span class="st">&quot;rfc&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;UNIX Time: 2024-10-21 21:06:53&quot;</code></pre>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
